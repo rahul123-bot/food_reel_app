@@ -1,0 +1,164 @@
+/* ================= ROOT ================= */
+.profile-root {
+max-width: 1200px;
+margin: 0 auto;
+padding: 104px 14px 20px;
+color: var(--text);
+}
+
+/* ================= CARD ================= */
+.card {
+background: var(--card);
+border-radius: 14px;
+box-shadow: var(--shadow);
+}
+
+/* ================= HEADER ================= */
+.profile-header {
+display: flex;
+align-items: center;
+gap: 14px;
+padding: 16px;
+}
+
+.profile-avatar {
+width: 72px;
+height: 72px;
+border-radius: 50%;
+object-fit:'cover';
+background: var(--accent);
+flex-shrink: 0;
+}
+
+.profile-info {
+display: flex;
+flex-direction: column;
+gap: 6px;
+}
+
+.business-name {
+margin: 0;
+font-size: 20px;
+font-weight: 700;
+}
+
+.address {
+font-size: 12px;
+padding: 4px 8px;
+border-radius: 6px;
+background: rgba(0,0,0,0.6);
+color: white;
+width: fit-content;
+}
+
+/* ================= STATS ================= */
+.profile-stats {
+display: grid;
+grid-template-columns: repeat(3, 1fr);
+gap: 8px;
+margin-top: 12px;
+}
+
+.stat {
+padding: 10px;
+}
+
+.stat .label {
+font-size: 11px;
+color: var(--muted);
+}
+
+.stat .value {
+font-size: 15px;
+font-weight: 700;
+}
+
+/* ================= INSTAGRAM GRID ================= */
+.videos-grid {
+display: grid;
+grid-template-columns: repeat(3, 1fr);
+gap: 2px;
+margin-top: 16px;
+}
+
+/* Tablet */
+@media (min-width: 600px) {
+.videos-grid {
+grid-template-columns: repeat(4, 1fr);
+
+}
+}
+
+/* Laptop */
+@media (min-width: 900px) {
+.videos-grid {
+grid-template-columns: repeat(5, 1fr);
+gap:3px
+
+}
+}
+
+/* Large */
+@media (min-width: 1200px) {
+.videos-grid {
+grid-template-columns: repeat(6, 1fr);
+}
+}
+
+/* ================= VIDEO TILE ================= */
+.video-tile {
+aspect-ratio: 1 / 1;
+overflow: hidden;
+position: relative;
+background: var(--card);
+cursor: pointer;
+}
+
+/* ================= VIDEO ================= */
+.video-media {
+width: 100%;
+height: 100%;
+object-fit: cover;
+display: block;
+}
+
+/* ================= HOVER ================= */
+.video-tile::after {
+content: "";
+position: absolute;
+inset: 0;
+background: rgba(0,0,0,0.2);
+opacity: 0;
+transition: 0.2s ease;
+}
+
+.video-tile:hover::after {
+opacity: 1;
+}
+
+/* ▶ Play icon */
+.video-tile::before {
+content: "▶";
+position: absolute;
+bottom: 6px;
+right: 6px;
+font-size: 14px;
+color: white;
+z-index: 2;
+}
+
+/* ================= MOBILE POLISH ================= */
+@media (max-width: 480px) {
+.profile-root {
+padding-top: 124px;
+}
+
+.profile-avatar {
+width: 60px;
+height: 60px;
+}
+
+.business-name {
+font-size: 18px;
+}
+}
