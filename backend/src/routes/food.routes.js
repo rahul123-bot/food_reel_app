@@ -13,8 +13,9 @@ Router.post('/',authMiddelware.authFoodPartnerMiddelware,
     upload.single("video"),
      foodcontroller.createFood);
 
-Router.get('/',authMiddelware.authUsermiddelware,
-    foodcontroller.getFoodItems);  
+// Public feed: no auth required
+Router.get('/',
+    foodcontroller.getFoodItems);
     
 Router.post("/like",authMiddelware.authUsermiddelware, 
     foodcontroller.likeFood)

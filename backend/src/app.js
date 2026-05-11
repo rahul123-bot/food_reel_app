@@ -13,6 +13,29 @@ app.use(cors({
 }));
 app.use(express.json());
 app.use(cookieparser());
+const path = require('path');
+const fs = require('fs');
+const uploadsPath = path.join(__dirname, '..', 'uploads');
+if (!fs.existsSync(uploadsPath)) {
+    fs.mkdirSync(uploadsPath, { recursive: true });
+}
+app.use('/uploads', express.static(uploadsPath, {
+    setHeaders: (res, filePath) => {
+        if (filePath.endsWith('.mp4')) {
+            res.setHeader('Content-Type', 'video/mp4');
+        }
+    }
+}));
+
+// Debug: list uploaded files (dev only)
+app.get('/admin/uploads', (req, res) => {
+    try {
+        const files = fs.readdirSync(uploadsPath).filter(f => f.slice(-4) === '.mp4');
+        res.json({ files });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
 app.get("/",(req,res)=>{
     res.send("hello world");
  })

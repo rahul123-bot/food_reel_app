@@ -8,7 +8,28 @@ const mongoose = require("mongoose")
 
 async function createFood(req,res){
     try {
-      const fileUploadResult = await storageService.uploadFile(req.file.buffer, uuid())
+      console.log('createFood request:', {
+        file: !!req.file,
+        fileKeys: req.file ? Object.keys(req.file) : null,
+        body: { name: req.body?.name, description: !!req.body?.description },
+        foodPartner: req.foodPartner ? req.foodPartner._id : null
+      });
+
+      if (!req.foodPartner) {
+        console.warn('createFood: missing req.foodPartner');
+        return res.status(401).json({ message: 'Partner authentication required' });
+      }
+
+      if (!req.body || !req.body.name || !req.body.name.trim()) {
+        return res.status(400).json({ message: 'Food name is required' });
+      }
+
+      if (!req.file || !req.file.buffer) {
+        console.warn('createFood: missing req.file or buffer');
+        return res.status(400).json({ message: "No video file uploaded" });
+      }
+
+      const fileUploadResult = await storageService.uploadFile(req.file.buffer, uuid(), req.file.mimetype)
 
     const foodItem = await foodModel.create({
         name: req.body.name,
@@ -17,17 +38,23 @@ async function createFood(req,res){
         foodPartner: req.foodPartner._id
     })
 
+    console.log('createFood: upload result', fileUploadResult && fileUploadResult.url);
     res.status(201).json({
-        message: "food created successfully",
-        food: foodItem
+      message: "food created successfully",
+      food: foodItem
     })
 
 }
 
    catch (error) {
       console.error("createFood error:", error);
+      if (error && error.name === 'ValidationError') {
+        const details = Object.values(error.errors).map(e => e.message);
+        return res.status(400).json({ message: 'Validation failed', details });
+      }
       res.status(500).json({
-        message: "failed to create food item"
+        message: "failed to create food item",
+        error: error && error.message ? error.message : String(error)
       });
     }
 
