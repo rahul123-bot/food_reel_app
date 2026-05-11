@@ -11,7 +11,7 @@ export default function Home() {
 
   useEffect(() => {
     axios
-      .get('http://localhost:5000/api/food', { withCredentials: true })
+      .get('https://food-reel-app-2.onrender.com/api/food', { withCredentials: true })
       .then(res=>{
         console.log(res.data);
         setvideos(res.data.foodItems)
@@ -22,7 +22,7 @@ export default function Home() {
     }, [])
   async function likeVideos(item){
     try {
-      const res = await axios.post("http://localhost:5000/api/food/like",{foodId: item._id},{withCredentials:true});
+      const res = await axios.post("https://food-reel-app-2.onrender.com/api/food/like",{foodId: item._id},{withCredentials:true});
       if(res.data.like){
         console.log("video liked");
         setvideos((prev)=> prev.map((v)=> v._id === item._id ?{...v , likeCount:(v.likeCount ?? 0) + 1}:v));
@@ -37,7 +37,7 @@ export default function Home() {
   }
   async function bookmarkVideo(item){
     try {
-      const res = await axios.post("http://localhost:5000/api/food/save",{foodId:item._id},{withCredentials:true});
+      const res = await axios.post("https://food-reel-app-2.onrender.com/api/food/save",{foodId:item._id},{withCredentials:true});
       if(res.data.save){
         console.log("video saved");
         setvideos((prev)=> prev.map((v)=> v._id === item._id ?{...v , saveCount:(v.saveCount ?? 0) + 1}:v));
