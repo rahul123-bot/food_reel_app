@@ -25,7 +25,7 @@ export default function RegisterUser() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try{
-      let response = await axios.post('https://food-reel-app-2.onrender.com/api/auth/user/register', userData,{
+      let response = await axios.post('https://localhost:5000/api/auth/user/register', userData,{
         withCredentials: true
    });
       console.log('User registered successfully:', response.data);

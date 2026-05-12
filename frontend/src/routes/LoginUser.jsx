@@ -22,7 +22,7 @@ export default function LoginUser() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      let response = await axios.post('https://food-reel-app-2.onrender.com/api/auth/user/login', loginData , {
+      let response = await axios.post('https://localhost:5000/api/auth/user/login', loginData , {
         withCredentials: true
       });
       console.log('User logged in successfully:', response.data);

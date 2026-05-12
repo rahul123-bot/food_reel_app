@@ -25,7 +25,7 @@ export default function FoodPartnerLogin() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      let response = await axios.post('https://food-reel-app-2.onrender.com/api/auth/food-partner/register', partnerData, {
+      let response = await axios.post('https://localhost:5000/api/auth/food-partner/register', partnerData, {
         withCredentials: true
       });
       console.log('FoodPartner registered successfully:', response.data);

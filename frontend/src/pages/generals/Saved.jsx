@@ -15,7 +15,7 @@ export default function Saved() {
     let isMounted = true;
 
     axios
-      .get('https://food-reel-app-2.onrender.com/api/food/save', { withCredentials: true })
+      .get('https://localhost:5000/api/food/save', { withCredentials: true })
       .then((response) => {
         if (!isMounted) return;
 
@@ -64,7 +64,7 @@ export default function Saved() {
   const likeVideos = async (item) => {
     try {
       const res = await axios.post(
-        'https://food-reel-app-2.onrender.com/api/food/like',
+        'https://localhost:5000/api/food/like',
         { foodId: item._id },
         { withCredentials: true }
       );
@@ -86,7 +86,7 @@ export default function Saved() {
   const removeSaved = async (item) => {
     try {
       const response = await axios.post(
-        'https://food-reel-app-2.onrender.com/api/food/save',
+        'https://localhost:5000/api/food/save',
         { foodId: item._id },
         { withCredentials: true }
       );

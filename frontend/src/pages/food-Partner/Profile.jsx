@@ -12,7 +12,7 @@ const Profile = () => {
   useEffect(()=>{
     let isMounted = true;
 
-    axios.get(`https://food-reel-app-2.onrender.com/api/food-partner/${id}`)
+    axios.get(`https://localhost:5000/api/food-partner/${id}`)
     .then(res=>{
       if (!isMounted) return;
       setProfiles(res.data.foodPartner)
