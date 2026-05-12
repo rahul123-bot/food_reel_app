@@ -7,8 +7,19 @@ const foodPartnerRoutes = require("./routes/food-partner.routes.js")
 const cors= require('cors');
 
 const app= express();
+const whitelist = [
+    'https://food-reel-app-eight.vercel.app',
+    'http://localhost:3000'
+];
 app.use(cors({
-    origin: 'http://localhost:3000/',
+    origin: function (origin, callback) {
+        if (!origin) return callback(null, true);
+        if (whitelist.indexOf(origin) !== -1) {
+            callback(null, true);
+        } else {
+            callback(new Error('Not allowed by CORS'));
+        }
+    },
     credentials: true
 }));
 app.use(express.json());

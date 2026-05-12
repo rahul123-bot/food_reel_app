@@ -21,7 +21,7 @@ export default function LoginPartner() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      let response = await axios.post('https://localhost:5000/api/auth/food-partner/login', loginData, {
+      let response = await axios.post('http://localhost:5000/api/auth/food-partner/login', loginData, {
         withCredentials: true
       });
       console.log('FoodPartner logged in successfully:', response.data);
