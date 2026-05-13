@@ -61,71 +61,126 @@ async function createFood(req,res){
 
 }
 async function getFoodItems(req,res){
-  const foodItems = await foodModel.find({})
-  res.status(200).json({
-    message:"food item fetched successfully",foodItems
-  })
+  try {
+    const foodItems = await foodModel.find({})
+    res.status(200).json({
+      message:"food item fetched successfully",foodItems
+    })
+  } catch (error) {
+    console.error('getFoodItems error:', error);
+    res.status(500).json({
+      message: 'failed to fetch food items',
+      error: error && error.message ? error.message : String(error)
+    });
+  }
 }
 async function likeFood (req,res){
-  const {foodId}= req.body;
-  const user = req.user
-  const isAlreadyLike = await likeModel.findOne({
-    user: user._id,
-    food: foodId
-  })
-  if(isAlreadyLike){
-    await likeModel.deleteOne({
+  try {
+    const {foodId}= req.body;
+    const user = req.user;
+
+    if (!user) {
+      return res.status(401).json({ message: 'Please login first' });
+    }
+
+    if (!foodId || !mongoose.Types.ObjectId.isValid(foodId)) {
+      return res.status(400).json({ message: 'Valid foodId is required' });
+    }
+
+    const isAlreadyLike = await likeModel.findOne({
+      user: user._id,
+      food: foodId
+    })
+    if(isAlreadyLike){
+      await likeModel.deleteOne({
+        user: user._id,
+        food: foodId
+      })
+      await foodModel.findByIdAndUpdate(foodId,{
+        $inc: {likeCount: -1}
+      })
+      return res.status(200).json({"message":"food unliked successfully", like: false})
+    }
+    const likeDoc = await likeModel.create({
       user: user._id,
       food: foodId
     })
     await foodModel.findByIdAndUpdate(foodId,{
-      $inc: {likeCount: -1}
+      $inc:{likeCount: 1}
     })
-    return res.status(200).json({"message":"food unliked successfully"})
+    res.status(201).json({"message":"food like successfully", like: true, likeDoc})
+  } catch (error) {
+    console.error('likeFood error:', error);
+    res.status(500).json({
+      message: 'failed to like food',
+      error: error && error.message ? error.message : String(error)
+    });
   }
-  const like = await likeModel.create({
-    user: user._id,
-    food: foodId
-  })
-  await foodModel.findByIdAndUpdate(foodId,{
-    $inc:{likeCount: 1}
-  })
-  res.status(201).json({"message":"food like successfully",like})
 
 }
 async function saveFood (req,res){
-  const{foodId} = req.body;
-  const user = req.user;
-  const isAlreadySave = await saveModel.findOne({
-    user: user._id,
-    food: foodId
-  });
-  if(isAlreadySave){
-    await saveModel.deleteOne({
-       user: user._id,
-       food: foodId
+  try {
+    const{foodId} = req.body;
+    const user = req.user;
+
+    if (!user) {
+      return res.status(401).json({ message: 'Please login first' });
+    }
+
+    if (!foodId || !mongoose.Types.ObjectId.isValid(foodId)) {
+      return res.status(400).json({ message: 'Valid foodId is required' });
+    }
+
+    const isAlreadySave = await saveModel.findOne({
+      user: user._id,
+      food: foodId
+    });
+    if(isAlreadySave){
+      await saveModel.deleteOne({
+         user: user._id,
+         food: foodId
+      })
+      await foodModel.findByIdAndUpdate(foodId,{
+        $inc:{saveCount: -1}
+      })
+      return res.status(200).json({"message":" food unsaved successfully", save: false});
+    }
+    const saveDoc = await saveModel.create({
+      user: user._id,
+      food: foodId
     })
     await foodModel.findByIdAndUpdate(foodId,{
-      $inc:{saveCount: -1}
+      $inc:{saveCount: 1}
     })
-    return res.status(200).json({"message":" food unsaved successfully"});
+    return res.status(201).json({"message":"food save successfully", save: true, saveDoc})
+  } catch (error) {
+    console.error('saveFood error:', error);
+    return res.status(500).json({
+      message: 'failed to save food',
+      error: error && error.message ? error.message : String(error)
+    });
   }
-  const save = await saveModel.create({
-    user: user._id,
-    food: foodId
-  })
-  await foodModel.findByIdAndUpdate(foodId,{
-    $inc:{saveCount: 1}
-  })
-  return res.status(201).json({"message":"food save successfully",save})
 }
 async function getSaveFood(req,res){
-  const user = req.user
-  const saveFoods = await saveModel.find({user: user._id}).populate("user").populate("food");
-  if(!saveFoods || saveFoods.length===0){
-     return res.status(404).json({"message":"no save food found"});
+  try {
+    const user = req.user;
+
+    if (!user) {
+      return res.status(401).json({ message: 'Please login first' });
+    }
+
+    const saveFoods = await saveModel.find({user: user._id}).populate("user").populate("food");
+    if(!saveFoods || saveFoods.length===0){
+      return res.status(404).json({"message":"no save food found"});
+    }
+    res.status(200).json({"message":"save foods retrieved successfully",saveFoods})
+  } catch (error) {
+    console.error('getSaveFood error:', error);
+    return res.status(500).json({
+      message: 'failed to load saved food',
+      error: error && error.message ? error.message : String(error)
+    });
   }
-  res.status(200).json({"message":"save foods retrieved successfully",saveFoods})
 }
 module.exports={
     createFood,

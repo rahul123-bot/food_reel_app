@@ -21,7 +21,7 @@ function AppShell() {
         <Route path="/user/register" element={<RegisterUser />} />
         <Route path="/user/login" element={<LoginUser />} />
         <Route path="/home" element={<Home />} />
-        <Route path="/saved" element={<ProtectedRoute allowedRole="user" redirectTo="/user/login"><Saved /></ProtectedRoute>} />
+        <Route path="/saved" element={<ProtectedRoute allowedRole="user" ><Saved /></ProtectedRoute>} />
         <Route path="/food-partner/:id" element={<Profile key={location.pathname} />} />
         <Route path="/food-partner/register" element={<FoodPartnerLogin />} />
         <Route path="/food-partner/login" element={<LoginPartner />} />

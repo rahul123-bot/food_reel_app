@@ -1,8 +1,8 @@
 import React, { useEffect } from 'react'
 import '../../styles/Profile.css';
 import { Link, useParams } from "react-router-dom";
-import axios from "axios"
 import { useState } from 'react';
+import api from '../../lib/api';
 const Profile = () => {
   const{id}=useParams();
   const [profiles,setProfiles]=useState(null)
@@ -12,7 +12,7 @@ const Profile = () => {
   useEffect(()=>{
     let isMounted = true;
 
-    axios.get(`http://localhost:5000/api/food-partner/${id}`)
+    api.get(`/api/food-partner/${id}`)
     .then(res=>{
       if (!isMounted) return;
       setProfiles(res.data.foodPartner)

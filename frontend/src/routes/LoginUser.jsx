@@ -2,9 +2,9 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import '../styles/variables.css';
 import '../styles/auth.css';
-import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
+import api from '../lib/api';
 
 export default function LoginUser() {
   const [loginData, setLoginData] = useState({
@@ -22,10 +22,11 @@ export default function LoginUser() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      let response = await axios.post('http://localhost:5000/api/auth/user/login', loginData , {
-        withCredentials: true
-      });
+      let response = await api.post('/api/auth/user/login', loginData);
       console.log('User logged in successfully:', response.data);
+      if (response.data?.token) {
+        localStorage.setItem('userToken', response.data.token);
+      }
      
 
       navigate('/home');

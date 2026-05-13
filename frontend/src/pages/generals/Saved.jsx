@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
-import axios from 'axios';
 import { Link, useNavigate } from 'react-router-dom';
 import BottomNav from '../../components/BottomNav';
 import IconButton from '../../components/IconButton';
 import '../../styles/reel.css';
+import api from '../../lib/api';
 
 export default function Saved() {
   const [videos, setVideos] = useState([]);
@@ -14,8 +14,8 @@ export default function Saved() {
   useEffect(() => {
     let isMounted = true;
 
-    axios
-      .get('http://localhost:5000/api/food/save', { withCredentials: true })
+    api
+      .get('/api/food/save')
       .then((response) => {
         if (!isMounted) return;
 
@@ -63,11 +63,7 @@ export default function Saved() {
 
   const likeVideos = async (item) => {
     try {
-      const res = await axios.post(
-        'http://localhost:5000/api/food/like',
-        { foodId: item._id },
-        { withCredentials: true }
-      );
+      const res = await api.post('/api/food/like', { foodId: item._id });
 
       if (res.data.like) {
         setVideos((prev) =>
@@ -79,17 +75,14 @@ export default function Saved() {
         );
       }
     } catch (error) {
+     
       console.error('failed to like saved video', error.response?.data || error.message);
     }
   };
 
   const removeSaved = async (item) => {
     try {
-      const response = await axios.post(
-        'http://localhost:5000/api/food/save',
-        { foodId: item._id },
-        { withCredentials: true }
-      );
+      const response = await api.post('/api/food/save', { foodId: item._id });
 
       if (response.data.save) {
         setVideos((prev) =>

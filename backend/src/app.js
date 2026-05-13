@@ -7,21 +7,16 @@ const foodPartnerRoutes = require("./routes/food-partner.routes.js")
 const cors= require('cors');
 
 const app= express();
-const whitelist = [
-    'https://food-reel-app-eight.vercel.app',
-    'http://localhost:3000'
-];
-app.use(cors({
-    origin: function (origin, callback) {
-        if (!origin) return callback(null, true);
-        if (whitelist.indexOf(origin) !== -1) {
-            callback(null, true);
-        } else {
-            callback(new Error('Not allowed by CORS'));
-        }
-    },
-    credentials: true
-}));
+
+
+// Allow requests from any origin but reflect the request origin in the
+// Access-Control-Allow-Origin header so cookies can be sent (credentials: true).
+app.use(
+    cors({
+        origin: "http://localhost:3000",
+        credentials: true,
+    })
+);
 app.use(express.json());
 app.use(cookieparser());
 const path = require('path');
@@ -50,8 +45,29 @@ app.get('/admin/uploads', (req, res) => {
 app.get("/",(req,res)=>{
     res.send("hello world");
  })
+// Debug endpoint to inspect cookies from the browser
+app.get('/api/debug/cookies', (req, res) => {
+    console.log('DEBUG /api/debug/cookies - incoming cookies:', req.cookies);
+    res.json({ cookies: req.cookies || {} });
+});
 app.use('/api/auth',authRoutes);
 app.use('/api/food', foodRoutes);
 app.use('/api/food-partner',foodPartnerRoutes);
+
+app.use((err, req, res, next) => {
+    if (err && err.type === 'entity.parse.failed') {
+        return res.status(400).json({ message: 'Invalid JSON payload' });
+    }
+
+    if (err) {
+        console.error('Unhandled app error:', err);
+        return res.status(500).json({
+            message: 'Internal server error',
+            error: err.message || String(err)
+        });
+    }
+
+    return next();
+});
 
 module.exports = app;

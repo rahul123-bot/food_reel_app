@@ -3,8 +3,8 @@ import { Link } from 'react-router-dom';
 import '../styles/variables.css';
 import '../styles/auth.css';
 import { useState } from 'react';
-import axios from 'axios';
 import {useNavigate} from 'react-router-dom';
+import api from '../lib/api';
 
 export default function FoodPartnerLogin() {
   const [partnerData, setPartnerData] = useState({
@@ -25,10 +25,11 @@ export default function FoodPartnerLogin() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      let response = await axios.post('http://localhost:5000/api/auth/food-partner/register', partnerData, {
-        withCredentials: true
-      });
+      let response = await api.post('/api/auth/food-partner/register', partnerData);
       console.log('FoodPartner registered successfully:', response.data);
+      if (response.data?.token) {
+        localStorage.setItem('foodPartnerToken', response.data.token);
+      }
       if (response.data?._id) {
         localStorage.setItem('foodPartnerId', response.data._id);
       }

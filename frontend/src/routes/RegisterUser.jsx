@@ -3,12 +3,12 @@ import { Link } from 'react-router-dom';
 import '../styles/variables.css';
 import '../styles/auth.css';
 import { useState } from 'react';
-import axios from 'axios';
 import {useNavigate} from 'react-router-dom';
+import api from '../lib/api';
 
 export default function RegisterUser() {
   const [userData, setUserData] = useState({
-    name: '',
+    fullname: '',
     email: '',
     phone: '',
     address: '',
@@ -25,10 +25,11 @@ export default function RegisterUser() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try{
-      let response = await axios.post('http://localhost:5000/api/auth/user/register', userData,{
-        withCredentials: true
-   });
+      let response = await api.post('/api/auth/user/register', userData);
       console.log('User registered successfully:', response.data);
+      if (response.data?.token) {
+        localStorage.setItem('userToken', response.data.token);
+      }
       navigate('/home');
     } catch (error) {
       console.error(error.response?.data||error.message);
@@ -43,8 +44,8 @@ export default function RegisterUser() {
 
         <form className="auth-form" onSubmit={handleSubmit}>
           <div>
-            <label>Name</label>
-            <input type="text" name="name" placeholder="Your name" value={userData.name}  onChange={handleChange} />
+            <label>Full name</label>
+            <input type="text" name="fullname" placeholder="Your name" value={userData.fullname}  onChange={handleChange} />
           </div>
 
           <div>

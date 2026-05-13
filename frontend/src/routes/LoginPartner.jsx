@@ -2,9 +2,9 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import '../styles/variables.css';
 import '../styles/auth.css';
-import axios from 'axios';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import api from '../lib/api';
 
 export default function LoginPartner() {
   const [loginData, setLoginData] = useState({
@@ -21,10 +21,11 @@ export default function LoginPartner() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      let response = await axios.post('http://localhost:5000/api/auth/food-partner/login', loginData, {
-        withCredentials: true
-      });
+      let response = await api.post('/api/auth/food-partner/login', loginData);
       console.log('FoodPartner logged in successfully:', response.data);
+      if (response.data?.token) {
+        localStorage.setItem('foodPartnerToken', response.data.token);
+      }
       if (response.data?.foodPartner?._id) {
         localStorage.setItem('foodPartnerId', response.data.foodPartner._id);
       }
